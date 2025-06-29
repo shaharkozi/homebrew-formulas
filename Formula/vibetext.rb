@@ -173,9 +173,12 @@ class Vibetext < Formula
       • Start VibeText backend  
       • Open the VibeText app
       
-      📱 App Location:
-      The app is installed at: $(brew --prefix)/Cellar/vibetext/#{version}
-      Drag it to Applications folder for easier access!
+      📱 Add to Applications (optional):
+      To manually open and drag the app to Applications:
+        open -R $(brew --prefix)/Cellar/vibetext/#{version}/*.app
+      
+      Or browse to: $(brew --prefix)/Cellar/vibetext/#{version}
+      Then drag the app to Applications folder for easier access!
       
       🛑 To stop everything:
         killall vibetext-backend ollama
