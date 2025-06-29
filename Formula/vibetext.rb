@@ -27,14 +27,15 @@ class Vibetext < Formula
       puts "Found app bundle: #{app_name}"
       prefix.install app_bundle
       
-      # Try to create a symlink in Applications, but don't fail if it doesn't work
-      # (macOS security restrictions may prevent this)
-      if system "ln", "-sf", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
-        puts "✅ Created symlink in /Applications/"
+      # Try to move the app to Applications directory
+      puts "Attempting to move app to /Applications/..."
+      if system "mv", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
+        puts "✅ App moved to /Applications/#{app_name}"
       else
-        puts "⚠️  Could not create symlink in /Applications/ (permission denied)"
-        puts "💡 You can manually open the app from: #{prefix}/#{app_name}"
-        puts "💡 Or drag it to Applications folder manually"
+        # If move failed, the app is still in the prefix directory
+        puts "⚠️  Could not move app to /Applications/ (permission denied)"
+        puts "💡 App available at: #{prefix}/#{app_name}"
+        puts "💡 You can manually drag it to Applications folder if desired"
       end
     else
       odie "No .app bundle found in archive"
@@ -161,15 +162,19 @@ class Vibetext < Formula
     <<~EOS
       VibeText has been installed! 🎉
       
-      To start everything at once:
+      🚀 Quick Start:
         vibetext
       
-      This will:
+      This command will:
       • Start Ollama server
       • Start VibeText backend  
       • Open the VibeText app
       
-      To stop everything:
+      📱 Optional - Add to Applications:
+      You can drag the app to Applications folder for easier access:
+        open $(brew --prefix)/Cellar/vibetext/#{version}
+      
+      🛑 To stop everything:
         killall vibetext-backend ollama
     EOS
   end
