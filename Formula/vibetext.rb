@@ -170,9 +170,10 @@ class Vibetext < Formula
       • Start VibeText backend  
       • Open the VibeText app
       
-      📱 Optional - Add to Applications:
-      You can drag the app to Applications folder for easier access:
-        open $(brew --prefix)/Cellar/vibetext/#{version}
+      📱 App Location:
+      The app is automatically moved to Applications during install.
+      If that failed, you can find it at:
+        $(brew --prefix)/Cellar/vibetext/#{version}
       
       🛑 To stop everything:
         killall vibetext-backend ollama
@@ -182,7 +183,9 @@ class Vibetext < Formula
   test do
     assert_predicate bin/"vibetext-backend", :exist?
     assert_predicate bin/"vibetext", :exist?
-    # Test for any .app bundle in the prefix directory
-    assert Dir.glob("#{prefix}/*.app").any?, "No .app bundle found in #{prefix}"
+    # Test for app bundle - check Applications first, then prefix directory
+    app_in_applications = Dir.glob("/Applications/*vibetext*.app").any?
+    app_in_prefix = Dir.glob("#{prefix}/*.app").any?
+    assert(app_in_applications || app_in_prefix, "No .app bundle found in Applications or #{prefix}")
   end
 end 
