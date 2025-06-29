@@ -27,16 +27,8 @@ class Vibetext < Formula
       puts "Found app bundle: #{app_name}"
       prefix.install app_bundle
       
-      # Try to move the app to Applications directory
-      puts "Attempting to move app to /Applications/..."
-      if system "mv", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
-        puts "✅ App moved to /Applications/#{app_name}"
-      else
-        # If move failed, the app is still in the prefix directory
-        puts "⚠️  Could not move app to /Applications/ (permission denied)"
-        puts "💡 App available at: #{prefix}/#{app_name}"
-        puts "💡 You can manually drag it to Applications folder if desired"
-      end
+      # App is installed in prefix directory
+      puts "✅ App installed at: #{prefix}/#{app_name}"
     else
       odie "No .app bundle found in archive"
     end
@@ -156,6 +148,17 @@ class Vibetext < Formula
       
       💡 Pro tip: Use @ or / to trigger command suggestions!
     EOS
+    
+    # Open Finder and highlight the app for easy dragging to Applications
+    app_path = Dir.glob("#{prefix}/*.app").first
+    if app_path
+      puts "\n📱 Opening Finder and highlighting the app..."
+      puts "💡 Drag the highlighted VibeText app to Applications folder for easier access!"
+      system "open", "-R", app_path
+    else
+      puts "\n📱 Opening Finder to show installation location..."
+      system "open", "#{prefix}"
+    end
   end
 
   def caveats
@@ -171,9 +174,8 @@ class Vibetext < Formula
       • Open the VibeText app
       
       📱 App Location:
-      The app is automatically moved to Applications during install.
-      If that failed, you can find it at:
-        $(brew --prefix)/Cellar/vibetext/#{version}
+      The app is installed at: $(brew --prefix)/Cellar/vibetext/#{version}
+      Drag it to Applications folder for easier access!
       
       🛑 To stop everything:
         killall vibetext-backend ollama
@@ -183,9 +185,7 @@ class Vibetext < Formula
   test do
     assert_predicate bin/"vibetext-backend", :exist?
     assert_predicate bin/"vibetext", :exist?
-    # Test for app bundle - check Applications first, then prefix directory
-    app_in_applications = Dir.glob("/Applications/*vibetext*.app").any?
-    app_in_prefix = Dir.glob("#{prefix}/*.app").any?
-    assert(app_in_applications || app_in_prefix, "No .app bundle found in Applications or #{prefix}")
+    # Test for app bundle in the prefix directory
+    assert Dir.glob("#{prefix}/*.app").any?, "No .app bundle found in #{prefix}"
   end
 end 
