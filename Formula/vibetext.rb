@@ -23,12 +23,21 @@ class Vibetext < Formula
     # Install the desktop app
     app_bundle = Dir.glob("**/app/*.app").first
     if app_bundle
-      prefix.install app_bundle
-      # Create a symlink in Applications (optional, for user convenience)
       app_name = File.basename(app_bundle)
-      system "ln", "-sf", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
+      puts "Found app bundle: #{app_name}"
+      prefix.install app_bundle
+      
+      # Try to create a symlink in Applications, but don't fail if it doesn't work
+      # (macOS security restrictions may prevent this)
+      if system "ln", "-sf", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
+        puts "✅ Created symlink in /Applications/"
+      else
+        puts "⚠️  Could not create symlink in /Applications/ (permission denied)"
+        puts "💡 You can manually open the app from: #{prefix}/#{app_name}"
+        puts "💡 Or drag it to Applications folder manually"
+      end
     else
-      odie "VibeText.app not found in archive"
+      odie "No .app bundle found in archive"
     end
     
     # Create a service script for easy startup
@@ -73,7 +82,21 @@ class Vibetext < Formula
       
       # Open the VibeText app
       echo "🎨 Opening VibeText app..."
-      open "/Applications/VibeText.app"
+      
+      # Try to find and open the app - check Applications first, then fallback to brew prefix
+      if [ -d "/Applications/VibeText.app" ]; then
+        open "/Applications/VibeText.app"
+      elif [ -d "/Applications/vibetext-chat.app" ]; then
+        open "/Applications/vibetext-chat.app"
+      else
+        # Fallback to the brew-installed location
+        APP_PATH=$(find #{prefix} -name "*.app" -type d | head -1)
+        if [ -n "$APP_PATH" ]; then
+          open "$APP_PATH"
+        else
+          echo "❌ Could not find VibeText app. Please open it manually from Applications or $(brew --prefix)/Cellar/vibetext/"
+        fi
+      fi
       
       echo "✨ VibeText is now running!"
       echo "💡 To stop: killall vibetext-backend ollama"
