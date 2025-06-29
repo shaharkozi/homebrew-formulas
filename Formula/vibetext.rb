@@ -9,14 +9,27 @@ class Vibetext < Formula
   depends_on :macos
 
   def install
+    # The archive contains a nested directory structure
+    # Find the actual files in the extracted structure
+    
     # Install the backend binary
-    bin.install "vibetext-backend"
+    backend_binary = Dir.glob("**/bin/vibetext-backend").first
+    if backend_binary
+      bin.install backend_binary
+    else
+      odie "vibetext-backend binary not found in archive"
+    end
     
     # Install the desktop app
-    prefix.install "VibeText.app"
-    
-    # Create a symlink in Applications (optional, for user convenience)
-    system "ln", "-sf", "#{prefix}/VibeText.app", "/Applications/VibeText.app"
+    app_bundle = Dir.glob("**/app/*.app").first
+    if app_bundle
+      prefix.install app_bundle
+      # Create a symlink in Applications (optional, for user convenience)
+      app_name = File.basename(app_bundle)
+      system "ln", "-sf", "#{prefix}/#{app_name}", "/Applications/#{app_name}"
+    else
+      odie "VibeText.app not found in archive"
+    end
     
     # Create a service script for easy startup
     (bin/"vibetext").write startup_script
@@ -141,6 +154,7 @@ class Vibetext < Formula
   test do
     assert_predicate bin/"vibetext-backend", :exist?
     assert_predicate bin/"vibetext", :exist?
-    assert_predicate prefix/"VibeText.app", :exist?
+    # Test for any .app bundle in the prefix directory
+    assert Dir.glob("#{prefix}/*.app").any?, "No .app bundle found in #{prefix}"
   end
 end 
