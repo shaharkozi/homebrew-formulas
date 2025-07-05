@@ -52,17 +52,17 @@ class Vibetext < Formula
         echo "✅ Ollama server is already running"
       fi
       
-      # Check if Llama 3 model is available
-      if ! ollama list | grep -q "llama3"; then
-        echo "🤖 Llama 3 model not found. Installing..."
-        if ollama pull llama3; then
-          echo "✅ Llama 3 model installed successfully!"
+      # Check if Gemma2:9b model is available
+      if ! ollama list | grep -q "gemma2:9b"; then
+        echo "🤖 Gemma2:9b model not found. Installing..."
+        if ollama pull gemma2:9b; then
+          echo "✅ Gemma2:9b model installed successfully!"
         else
-          echo "❌ Failed to install Llama 3 model. Please run: ollama pull llama3"
+          echo "❌ Failed to install Gemma2:9b model. Please run: ollama pull gemma2:9b"
           exit 1
         fi
       else
-        echo "✅ Llama 3 model is ready"
+        echo "✅ Gemma2:9b model is ready"
       fi
       
       # Start VibeText backend in background
@@ -102,9 +102,9 @@ class Vibetext < Formula
 
   def post_install
     puts <<~EOS
-      🤖 Setting up Llama 3 model...
+      🤖 Setting up Gemma2:9b model...
       
-      Starting Ollama and pulling Llama 3 (this may take a few minutes)...
+      Starting Ollama and pulling Gemma2:9b (this may take a few minutes)...
     EOS
     
     # Ensure Ollama is running
@@ -114,12 +114,12 @@ class Vibetext < Formula
       sleep 5  # Give Ollama time to start
     end
     
-    # Pull Llama 3 model with proper error handling
-    puts "⬇️  Downloading Llama 3 model..."
-    unless system("ollama pull llama3")
-      puts "⚠️  Failed to download Llama 3. You can install it manually later with: ollama pull llama3"
+    # Pull Gemma2:9b model with proper error handling
+    puts "⬇️  Downloading Gemma2:9b model..."
+    unless system("ollama pull gemma2:9b")
+      puts "⚠️  Failed to download Gemma2:9b. You can install it manually later with: ollama pull gemma2:9b"
     else
-      puts "✅ Llama 3 model installed successfully!"
+      puts "✅ Gemma2:9b model installed successfully!"
     end
     
     puts <<~EOS
@@ -138,8 +138,9 @@ class Vibetext < Formula
       • @fixGrammar   - Fix grammatical errors
       • @rephrase     - Rewrite in different style
       • @changeTone   - Adjust tone (formal, casual, etc.)
-      • @summarize    - Create concise summaries
-      • @translate    - Translate to different languages
+      • @enhanceEmail - Improve email
+      • @linkedinPost - Write LinkedIn post   
+      • @slackMessage - Improve Slack message
       
       🔧 Troubleshooting:
       • Stop all: killall vibetext-backend ollama
@@ -179,6 +180,8 @@ class Vibetext < Formula
       
       Or browse to: $(brew --prefix)/Cellar/vibetext/#{version}
       Then drag the app to Applications folder for easier access!
+
+      use vibetext to start everything (the vibetext-chat.app starts only the UI.)
       
       🛑 To stop everything:
         killall vibetext-backend ollama
