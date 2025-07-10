@@ -174,14 +174,10 @@ class Vibetext < Formula
       • Start VibeText backend  
       • Open the VibeText app
       
-      📱 Add to Applications (optional):
-      To manually open and drag the app to Applications:
-        open -R $(brew --prefix)/Cellar/vibetext/#{version}/*.app
+      use vibetext to start everything (the vibetext-chat.app starts only the UI.)
       
       Or browse to: $(brew --prefix)/Cellar/vibetext/#{version}
       Then drag the app to Applications folder for easier access!
-
-      use vibetext to start everything (the vibetext-chat.app starts only the UI.)
       
       🛑 To stop everything:
         killall vibetext-backend ollama
