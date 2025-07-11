@@ -1,8 +1,8 @@
 class Vibetext < Formula
   desc "AI-powered text assistant with beautiful UI and powerful commands"
   homepage "https://github.com/shaharkozi/VibeText"
-  url "https://github.com/shaharkozi/VibeText-releases/releases/download/v0.10.0/VibeText-v0.10.0-macos-universal.tar.gz"
-  sha256 "a2a722825e13154172f6133b3cb6c4fc3a8eab5c70e38aa2bd9820203eaf7610"
+  url "https://github.com/shaharkozi/VibeText-releases/releases/download/v0.10.1/VibeText-v0.10.1-macos-universal.tar.gz"
+  sha256 "96521ea2261c1a60be4a6fae9e5645eb0f059d8c7c35f40ecc255e6c96f64af2"
   license "MIT"
 
   depends_on "ollama"
